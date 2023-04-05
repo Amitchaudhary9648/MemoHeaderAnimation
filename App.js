@@ -8,13 +8,152 @@ import {
     ScrollView,
     Image,
     TextInput,
+    Animated,
 } from 'react-native';
-import React from 'react';
+import React, { useRef } from 'react';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput)
+
 const App = () => {
+    const animatedValue = useRef(new Animated.Value(0)).current
+
+    const searchInputAnimation = {
+        transform: [
+            {
+                scaleX: animatedValue.interpolate({
+                    inputRange: [0, 50],
+                    outputRange: [1, 0],
+                    extrapolate: 'clamp'
+                })
+            },
+            {
+                translateX: animatedValue.interpolate({
+                    inputRange: [0, 25],
+                    outputRange: [0, -100],
+                    extrapolate: 'clamp'
+                })
+            },
+        ],
+        opacity: animatedValue.interpolate({
+            inputRange: [0, 25],
+            outputRange: [1, 0],
+            extrapolate: 'clamp'
+        })
+    }
+
+    const featureNameAnimation = {
+        transform: [
+            {
+                scaleX: animatedValue.interpolate({
+                    inputRange: [0, 30],
+                    outputRange: [1, 0],
+                    extrapolate: 'clamp'
+                })
+            },
+        ],
+        opacity: animatedValue.interpolate({
+            inputRange: [0, 30],
+            outputRange: [1, 0],
+            extrapolate: 'clamp'
+        })
+    }
+
+    const rechargeViewAnimation = {
+        transform: [
+            {
+                translateX: animatedValue.interpolate({
+                    inputRange: [0, 80],
+                    outputRange: [0, 36],
+                    extrapolate: 'clamp'
+                })
+            },
+            {
+                translateY: animatedValue.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: [0, -40],
+                    extrapolate: 'clamp'
+                })
+            },
+        ],
+    }
+
+    const balanceViewAnimation = {
+        transform: [
+            {
+                translateX: animatedValue.interpolate({
+                    inputRange: [0, 80],
+                    outputRange: [0, -6],
+                    extrapolate: 'clamp'
+                })
+            },
+            {
+                translateY: animatedValue.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: [0, -40],
+                    extrapolate: 'clamp'
+                })
+            },
+        ],
+    }
+
+    const depositViewAnimation = {
+        transform: [
+            {
+                translateX: animatedValue.interpolate({
+                    inputRange: [0, 80],
+                    outputRange: [0, -46],
+                    extrapolate: 'clamp'
+                })
+            },
+            {
+                translateY: animatedValue.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: [0, -40],
+                    extrapolate: 'clamp'
+                })
+            },
+        ],
+    }
+
+    const scanQrViewAnimation = {
+        transform: [
+            {
+                translateX: animatedValue.interpolate({
+                    inputRange: [0, 80],
+                    outputRange: [0, -86],
+                    extrapolate: 'clamp'
+                })
+            },
+            {
+                translateY: animatedValue.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: [0, -40],
+                    extrapolate: 'clamp'
+                })
+            },
+        ],
+    }
+
+    const featuredIconCircleAnimation = {
+        opacity: animatedValue.interpolate({
+            inputRange: [0, 25],
+            outputRange: [1, 0],
+            extrapolate: 'clamp'
+        })
+    }
+
+    const featuredIconAnimation = {
+        opacity: animatedValue.interpolate({
+            inputRange: [0, 50],
+            outputRange: [0, 1],
+            extrapolate: 'clamp'
+        })
+    }
+
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle={'light-content'} />
@@ -27,10 +166,10 @@ const App = () => {
                         <Image
                             source={require('./src/assets/Images/search.png')}
                             style={styles.searchIcon} />
-                        <TextInput
+                        <AnimatedTextInput
                             placeholder='Search'
                             placeholderTextColor={"rgba(255,255,255,0.8)"}
-                            style={styles.searchInput} />
+                            style={[styles.searchInput, searchInputAnimation]} />
                     </View>
                     <Image
                         source={require('./src/assets/Images/bell.png')}
@@ -41,46 +180,64 @@ const App = () => {
                         style={styles.avatarIcon} />
                 </View>
                 <View style={styles.lowerHeader}>
-                    <View style={styles.feature}>
-                        <View style={styles.whiteBackground}>
-                        <Image
+                    <Animated.View style={[styles.feature, rechargeViewAnimation]}>
+                        <Animated.View style={[styles.whiteBackground, featuredIconCircleAnimation]}>
+                            <Image
+                                source={require('./src/assets/Images/logout.png')}
+                                style={styles.featureIconCircle} />
+                        </Animated.View>
+                        <Animated.Image
                             source={require('./src/assets/Images/logout.png')}
-                            style={styles.featureIconCircle} />
-                        </View>
-                        <Text style={styles.featureName}>Recharge</Text>
-                    </View>
+                            style={[styles.featureIcon, featuredIconAnimation]} />
+                        <Animated.Text style={[styles.featureName, featureNameAnimation]}>Recharge</Animated.Text>
+                    </Animated.View>
 
-                    <View style={styles.feature}>
-                    <View style={styles.whiteBackground}>
-                        <Image
+                    <Animated.View style={[styles.feature, balanceViewAnimation]}>
+                        <Animated.View style={[styles.whiteBackground, featuredIconCircleAnimation]}>
+                            <Image
+                                source={require('./src/assets/Images/balance.png')}
+                                style={styles.featureIconCircle} />
+                        </Animated.View>
+                        <Animated.Image
                             source={require('./src/assets/Images/balance.png')}
-                            style={styles.featureIconCircle} />
-                        </View>
-                        <Text style={styles.featureName}>Balance</Text>
-                    </View>
+                            style={[styles.featureIcon, featuredIconAnimation]} />
+                        <Animated.Text style={[styles.featureName, featureNameAnimation]}>Balance</Animated.Text>
+                    </Animated.View>
 
-                    <View style={styles.feature}>
-                    <View style={styles.whiteBackground}>
-                        <Image
+                    <Animated.View style={[styles.feature, depositViewAnimation]}>
+                        <Animated.View style={[styles.whiteBackground, featuredIconCircleAnimation]}>
+                            <Image
+                                source={require('./src/assets/Images/barcode.png')}
+                                style={styles.featureIconCircle} />
+                        </Animated.View>
+                        <Animated.Image
                             source={require('./src/assets/Images/barcode.png')}
-                            style={styles.featureIconCircle} />
-                        </View>
-                        <Text style={styles.featureName}>Deposit</Text>
-                    </View>
+                            style={[styles.featureIcon, featuredIconAnimation]} />
+                        <Animated.Text style={[styles.featureName, featureNameAnimation]}>Deposit</Animated.Text>
+                    </Animated.View>
 
-                    <View style={styles.feature}>
-                    <View style={styles.whiteBackground}>
-                        <Image
+                    <Animated.View style={[styles.feature, scanQrViewAnimation]}>
+                        <Animated.View style={[styles.whiteBackground, featuredIconCircleAnimation]}>
+                            <Image
+                                source={require('./src/assets/Images/qrcode.png')}
+                                style={styles.featureIconCircle} />
+                        </Animated.View>
+                        <Animated.Image
                             source={require('./src/assets/Images/qrcode.png')}
-                            style={styles.featureIconCircle} />
-                        </View>
-                        <Text style={styles.featureName}>Scan</Text>
-                    </View>
+                            style={[styles.featureIcon, featuredIconAnimation]} />
+                        <Animated.Text style={[styles.featureName, featureNameAnimation]}>Scan QR</Animated.Text>
+                    </Animated.View>
                 </View>
             </SafeAreaView>
 
 
-            <ScrollView>
+            <ScrollView
+                onScroll={e => {
+                    const offSetY = e.nativeEvent.contentOffset.y
+                    animatedValue.setValue(offSetY)
+                }}
+                scrollEventThrottle={16}
+            >
                 <View style={styles.paddingForHeader} />
                 <View style={styles.scrollViewContent} />
             </ScrollView>
@@ -124,7 +281,8 @@ const styles = StyleSheet.create({
     },
     searchIcon: {
         width: 16,
-        height: 16
+        height: 16,
+        marginLeft: 10
     },
     bellIcon: {
         width: 16,
@@ -146,28 +304,36 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 16
     },
-    feature:{
+    feature: {
         alignItems: 'center',
     },
-    whiteBackground:{
+    whiteBackground: {
         backgroundColor: '#fff',
         borderRadius: 20,
         padding: 10
     },
-    featureIconCircle:{
-        height: 40,
-        width: 40,
+    featureIconCircle: {
+        height: 38,
+        width: 38,
         tintColor: '#AF0C6E',
     },
-    featureName:{
+    featureIcon:{
+        height: 16,
+        width: 16,
+        tintColor: '#fff',
+        position: 'absolute',
+        top: 8
+    },
+    featureName: {
         fontWeight: 'bold',
         fontSize: 12,
         lineHeight: 14,
         color: '#fff',
-        marginTop: 12
+        marginTop: 12,
+        marginBottom: 5
     },
     paddingForHeader: {
-        height: LOWER_HEADER_HEIGHT ,
+        height: LOWER_HEADER_HEIGHT,
     },
     scrollViewContent: {
         height: windowHeight * 2,
