@@ -19,7 +19,9 @@ const AnimatedTextInput = Animated.createAnimatedComponent(TextInput)
 
 const App = () => {
     const animatedValue = useRef(new Animated.Value(0)).current
-
+    const scrollViewRef = useRef(null)
+    const lastOffsetY = 0
+    const scrollDirection = useRef(' ')
     const searchInputAnimation = {
         transform: [
             {
@@ -156,7 +158,7 @@ const App = () => {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle={'light-content'} />
+            <StatusBar  barStyle={'light-content'}  />
             <SafeAreaView>
                 <View style={styles.upperHeaderPlaceholder} />
             </SafeAreaView>
@@ -234,7 +236,16 @@ const App = () => {
             <ScrollView
                 onScroll={e => {
                     const offSetY = e.nativeEvent.contentOffset.y
+                    scrollDirection.current = offSetY - lastOffsetY.current > 0 ? 'down' : 'up'
+                    lastOffsetY.current = offSetY
+
                     animatedValue.setValue(offSetY)
+                }}
+                onScrollEndDrag={() => {
+                    scrollViewRef.current?.scrollTo({
+                        y: scrollDirection.current === 'down' ? 100 : 0,
+                        animated: true
+                    })
                 }}
                 scrollEventThrottle={16}
             >
